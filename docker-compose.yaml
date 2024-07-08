@@ -1,0 +1,10 @@
+services:
+  function-poc-sam-lambda:
+    image: public.ecr.aws/sam/build-nodejs18.x
+    environment:
+      - SAM_CLI_TELEMETRY=0
+      - SAM_CLI_CONTAINER_CONNECTION_TIMEOUT=40
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - .:/var/task:delegated # the "task" is the function code
+    command: [ "sh", "-c", "sam local start-lambda --host 0.0.0.0" ] # --warm-containers EAGER
