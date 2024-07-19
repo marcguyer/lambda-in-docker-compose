@@ -1,6 +1,6 @@
 services:
   function-poc-sam-lambda-a:
-    image: public.ecr.aws/sam/build-nodejs18.x
+    image: public.ecr.aws/sam/build-nodejs20.x
     environment:
       - SAM_CLI_TELEMETRY=0
       - SAM_CLI_CONTAINER_CONNECTION_TIMEOUT=40
@@ -12,7 +12,7 @@ services:
 #    ports:
 #      - 3001:3001 # it's possible to connect from outside the env here but we normally use the awscli service
   function-poc-sam-lambda-b:
-    image: public.ecr.aws/sam/build-nodejs18.x
+    image: public.ecr.aws/sam/build-nodejs20.x
     environment:
       - SAM_CLI_TELEMETRY=0
       - SAM_CLI_CONTAINER_CONNECTION_TIMEOUT=40

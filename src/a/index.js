@@ -1,4 +1,5 @@
 const AWS = require('aws-sdk');
+const { Buffer } = require('node:buffer');
 
 // Override the endpoint to point to the local Lambda server
 AWS.config.update({
@@ -14,11 +15,13 @@ exports.handler = async (event) => {
     const params = {
         FunctionName: 'PocSamLambdaFunctionB',
         Payload: JSON.stringify({ message: 'Hello from LambdaA!', from: 'LambdaA' }),
+        InvocationType: 'RequestResponse',
     };
 
     try {
         console.debug('Calling LambdaB with params:', params);
         const response = await lambda.invoke(params).promise();
+
         console.debug('Response from LambdaB:', response.Payload);
 
         if (event && event.from) {
