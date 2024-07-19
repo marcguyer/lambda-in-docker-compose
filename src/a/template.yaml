@@ -16,7 +16,7 @@ Resources:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
         - arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess
-  PocSamLambdaFunction:
+  PocSamLambdaFunctionA:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: .

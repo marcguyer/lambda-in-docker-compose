@@ -1,10 +1,32 @@
 services:
-  function-poc-sam-lambda:
+  function-poc-sam-lambda-a:
     image: public.ecr.aws/sam/build-nodejs18.x
     environment:
       - SAM_CLI_TELEMETRY=0
       - SAM_CLI_CONTAINER_CONNECTION_TIMEOUT=40
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-      - .:/var/task:delegated # the "task" is the function code
-    command: [ "sh", "-c", "sam local start-lambda --host 0.0.0.0" ] # --warm-containers EAGER
+      - ./src/a:/var/task:delegated
+      - $PWD:$PWD # this is an oddity required by the sam local docker-in-docker support
+    command: [ "sh", "-c", "sam local start-lambda --host 0.0.0.0 --docker-network lambda-in-docker-compose_default --docker-volume-basedir $PWD/src/a --debug --container-host host.docker.internal --warm-containers EAGER" ]
+#    ports:
+#      - 3001:3001 # it's possible to connect from outside the env here but we normally use the awscli service
+  function-poc-sam-lambda-b:
+    image: public.ecr.aws/sam/build-nodejs18.x
+    environment:
+      - SAM_CLI_TELEMETRY=0
+      - SAM_CLI_CONTAINER_CONNECTION_TIMEOUT=40
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+      - ./src/b:/var/task:delegated
+      - $PWD:$PWD
+    command: [ "sh", "-c", "sam local start-lambda --host 0.0.0.0 --docker-network lambda-in-docker-compose_default --docker-volume-basedir $PWD/src/b --debug --container-host host.docker.internal --warm-containers EAGER" ]
+  awscli:
+    image: amazon/aws-cli
+    stdin_open: true # equivalent of -i
+    tty: true        # equivalent of -ts
+    command: [ "aws", "help" ]
+    environment:
+      - AWS_REGION=eu-central-1
+      - AWS_ACCESS_KEY_ID=local
+      - AWS_SECRET_ACCESS_KEY=local
